@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,7 +39,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-          CallUpdate()
+          show()
         }
     }
 }
@@ -122,4 +123,32 @@ fun Counter(value:Int){
     }
     Text(text =state.value.toString())
 
+}
+
+
+fun a(){Log.d("launchEffect","i am apple A")}
+
+fun b(){Log.d("launchEffect","i am apple B")}
+
+@Composable
+fun show(){
+    var state =  remember {
+        mutableStateOf(::a)
+    }
+    Button(onClick = {
+        state.value = ::b
+    }) {
+        Text(text = "click to change the state")
+    }
+    LoadingScreen(state.value)
+}
+
+@Composable
+fun LoadingScreen(onTimeout:()->Unit){
+    val currentOnTimeout by rememberUpdatedState(onTimeout)
+    LaunchedEffect(key1 = true) {
+        delay(5000)
+        currentOnTimeout()
+
+    }
 }
