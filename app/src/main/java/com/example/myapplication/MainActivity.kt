@@ -1,12 +1,15 @@
 package com.example.myapplication
 
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewTreeObserver
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,6 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -30,8 +34,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -41,7 +49,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-          Disposableeffect()
+          KeyboardComposable()
+            TextField(value = "", onValueChange ={} )
         }
     }
 }
@@ -174,3 +183,43 @@ fun Disposableeffect(){
     }
 
 }
+
+
+@Composable
+fun mediaPlayer(){
+    val  context = LocalContext.current
+    DisposableEffect(Unit) {
+        val mediaPLayer = MediaPlayer.create(context,R.raw.glass)
+        mediaPLayer.start()
+
+        onDispose {
+            mediaPLayer.stop()
+            mediaPLayer.release()
+
+        }
+
+    }
+
+}
+
+
+
+@Composable
+fun KeyboardComposable(){
+    val view =  LocalView.current
+    DisposableEffect(key1 = Unit) {
+        val listener = ViewTreeObserver.OnGlobalLayoutListener {
+            val insects = ViewCompat.getRootWindowInsets(view)
+           val isKeyboardVisible =  insects?.isVisible(WindowInsetsCompat.Type.ime())
+            Log.d("kiran",isKeyboardVisible.toString())
+        }
+        view.viewTreeObserver.addOnGlobalLayoutListener (listener)
+
+        onDispose {
+            view.viewTreeObserver.removeOnGlobalLayoutListener (listener) }
+             }
+
+        }
+
+
+
