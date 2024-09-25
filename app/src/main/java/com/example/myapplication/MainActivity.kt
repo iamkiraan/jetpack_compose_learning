@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.annotation.SuppressLint
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
@@ -28,9 +29,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
@@ -57,7 +60,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            loader()
+            Derived()
         }
     }
 
@@ -275,5 +278,28 @@ fun loader(){
                 modifier = Modifier.padding(40.dp))
         }
     )
+}
+
+@SuppressLint("UnrememberedMutableState")
+@Composable
+fun Derived(){
+    val tableOf = remember { mutableStateOf(5) }
+    val index = produceState(initialValue = 1 ) {
+        repeat(10){
+            delay(1000)
+            value+=1
+        }
+
+    }
+    val message = derivedStateOf {
+        "${tableOf.value}*${index.value} = ${tableOf.value * index.value}"
+    }
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize(1f)
+    ){
+        Text(text = message.value)
+
+    }
 }
 
