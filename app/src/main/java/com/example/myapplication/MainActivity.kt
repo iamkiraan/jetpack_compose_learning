@@ -19,8 +19,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,7 +41,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-          show()
+          Disposableeffect()
         }
     }
 }
@@ -151,4 +153,24 @@ fun LoadingScreen(onTimeout:()->Unit){
         currentOnTimeout()
 
     }
+}
+
+
+@Composable
+fun Disposableeffect(){
+    var state = remember { mutableStateOf(false) }
+    DisposableEffect(key1 = state.value) {
+        Log.d("launchEffect","started")
+        onDispose {
+            Log.d("launchEffect","cleaning up side")
+        }
+
+    }
+    Button(onClick = {
+        state.value = !state.value
+    }) {
+        Text(text =  "change state")
+
+    }
+
 }
